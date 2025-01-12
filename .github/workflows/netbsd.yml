@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-netbsd-cross-live-ci:
+    name: "build netbsd-cross-live-ci"
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        machine: [alpha, i386, vax]
+
+    steps:
+      - name: Build project in NetBSD/${{ matrix.machine }} environment
+        uses: tsutsui/netbsd-cross-live-ci@master
+        with:
+          machine: "${{ matrix.machine }}"
+          release: "10.1"
+
+          configure: |
+            sh Configure -sde
+
+          build: |
+            make
+            make install
